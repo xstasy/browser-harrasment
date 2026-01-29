@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browser Harassment</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+  <div class="popup-container">
+    <header class="popup-header">
+      <div class="header-left">
+        <img src="../icons/logo128.png" alt="Logo" class="mini-logo">
+        <span class="app-name">Browser Harassment</span>
+      </div>
+    </header>
+
+    <main class="popup-main">
+      <div class="hero-section">
+        <div class="hostname" id="current-site">analyzing...</div>
+        <div class="status-badge" id="protection-status">
+          <span class="status-dot"></span>
+          <span id="status-text">Protection is ON</span>
+        </div>
+
+        <div class="main-toggle-container">
+          <label class="big-toggle">
+            <input type="checkbox" id="enabled-toggle" checked>
+            <span class="big-toggle-slider">
+              <span class="toggle-icon">
+                <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </span>
+            </span>
+          </label>
+        </div>
+
+        <div class="quick-stats">
+          <span id="popups-today">0</span> blocks today
+        </div>
+      </div>
+
+      <div class="tabs-container">
+        <div class="tab-triggers">
+          <button class="tab-trigger active" data-tab="actions">Actions</button>
+          <button class="tab-trigger" data-tab="stats">Statistics</button>
+        </div>
+
+        <div class="tab-content active" id="tab-actions">
+          <div class="action-list">
+            <button class="action-item" id="whitelist-btn">
+              <div class="action-icon">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+              </div>
+              <div class="action-label" id="whitelist-btn-text">Whitelist this site</div>
+            </button>
+            <button class="action-item">
+              <div class="action-icon">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 11-7.6-11.7.9.9 0 01.1 0" />
+                  <path d="M16 5l-5 5-2-2" />
+                  <circle cx="12" cy="12" r="9" stroke-opacity="0.2" />
+                </svg>
+              </div>
+              <div class="action-label">Report detection issue</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-stats">
+          <div class="stats-list">
+            <div class="stat-item">
+              <div class="stat-info">
+                <span class="stat-name">Sites with issues</span>
+                <span class="stat-count" id="sites-issues">0</span>
+              </div>
+            </div>
+            <div class="whitelist-section">
+              <h4>Whitelisted Domains</h4>
+              <ul id="whitelist" class="minimal-list">
+                <li class="empty-msg">None</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="popup-footer">
+      <div class="footer-msg">Protecting your digital privacy</div>
+      <div class="footer-links">
+
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+
+</html>

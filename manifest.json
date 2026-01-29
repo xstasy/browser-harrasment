@@ -1,0 +1,59 @@
+{
+    "manifest_version": 3,
+    "name": "Browser Harassment",
+    "version": "1.0.0",
+    "description": "Automatically rejects privacy popups and cookie consent banners while protecting your privacy",
+    "icons": {
+        "16": "icons/logo16.png",
+        "48": "icons/logo48.png",
+        "128": "icons/logo128.png"
+    },
+    "permissions": [
+        "storage",
+        "activeTab",
+        "scripting"
+    ],
+    "host_permissions": [
+        "<all_urls>"
+    ],
+    "action": {
+        "default_popup": "popup/popup.html",
+        "default_icon": {
+            "16": "icons/logo16.png",
+            "48": "icons/logo48.png",
+            "128": "icons/logo128.png"
+        }
+    },
+    "background": {
+        "service_worker": "background/service-worker.js"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "http://*/*",
+                "https://*/*"
+            ],
+            "js": [
+                "content/detector.js",
+                "content/automator.js",
+                "content/fallback.js",
+                "content/main.js"
+            ],
+            "css": [
+                "content/warning.css"
+            ],
+            "run_at": "document_end",
+            "all_frames": true
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "icons/*"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ]
+}
