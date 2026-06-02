@@ -32,6 +32,44 @@
     let isProcessing = false;
 
     /**
+     * Apply custom site-specific fixes
+     */
+    function applySiteFixes() {
+        const hostname = window.location.hostname;
+        const fixes = Object.entries(BH_Detector.siteFixes || {})
+            .filter(([domain]) => hostname === domain || hostname.endsWith('.' + domain))
+            .map(([, fix]) => fix);
+
+        for (const fix of fixes) {
+            // Apply style overrides
+            if (fix.styles) {
+                fix.styles.forEach(s => {
+                    const elements = document.querySelectorAll(s.selector);
+                    elements.forEach(el => {
+                        for (const [prop, value] of Object.entries(s.properties)) {
+                            el.style.setProperty(prop, value, 'important');
+                        }
+                    });
+                });
+            }
+
+            // Remove specific classes
+            if (fix.classesToRemove) {
+                fix.classesToRemove.forEach(c => {
+                    const elements = document.querySelectorAll(c.selector);
+                    elements.forEach(el => {
+                        c.classes.forEach(cls => {
+                            if (el.classList.contains(cls)) {
+                                el.classList.remove(cls);
+                            }
+                        });
+                    });
+                });
+            }
+        }
+    }
+
+    /**
      * Force restore scrolling if site logic blocked it
      */
     function restoreScrolling() {
@@ -74,6 +112,9 @@
         isProcessing = true;
 
         try {
+            // Apply site-specific fixes (e.g. z-index, class removal)
+            applySiteFixes();
+
             const hostname = window.location.hostname;
             const stripoutSelectors = Object.entries(BH_Detector.stripoutSelectors || {})
                 .filter(([domain]) => hostname === domain || hostname.endsWith('.' + domain))

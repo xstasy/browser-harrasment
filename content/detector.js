@@ -12,6 +12,18 @@ const BH_Detector = {
         'aftenbladet.no': ['[id^="sp_message_container"]', '.sp_message_container', '#sp_message_container_1485780']
     },
 
+    // Custom fixes for specific sites that need more than just element hiding
+    siteFixes: {
+        'avisa-valdres.no': {
+            styles: [
+                { selector: '#aid-overlay', properties: { 'z-index': '0' } }
+            ],
+            classesToRemove: [
+                { selector: '.aid-background-blur', classes: ['aid-background-blur'] }
+            ]
+        }
+    },
+
     // Common CMP container selectors
     containerSelectors: [
         // Generic patterns
