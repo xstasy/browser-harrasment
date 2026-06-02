@@ -2,6 +2,16 @@
 // Detects privacy/cookie consent popups and their elements
 
 const BH_Detector = {
+    // Selectors that should be hidden on specific domains
+    stripoutSelectors: {
+        'vg.no': ['[id^="sp_message_container"]', '.sp_message_container'],
+        'tek.no': ['[id^="sp_message_container"]', '.sp_message_container'],
+        'aftenposten.no': ['[id^="sp_message_container"]', '.sp_message_container'],
+        'e24.no': ['[id^="sp_message_container"]', '.sp_message_container'],
+        'bt.no': ['[id^="sp_message_container"]', '.sp_message_container'],
+        'aftenbladet.no': ['[id^="sp_message_container"]', '.sp_message_container', '#sp_message_container_1485780']
+    },
+
     // Common CMP container selectors
     containerSelectors: [
         // Generic patterns
@@ -215,10 +225,16 @@ const BH_Detector = {
     isVisible(element) {
         if (!element) return false;
         const style = window.getComputedStyle(element);
-        return style.display !== 'none' &&
-            style.visibility !== 'hidden' &&
-            style.opacity !== '0' &&
-            element.offsetParent !== null;
+        const isHidden = style.display === 'none' ||
+            style.visibility === 'hidden' ||
+            style.opacity === '0';
+        
+        if (isHidden) return false;
+
+        // Fixed position elements have null offsetParent but are visible
+        if (style.position === 'fixed') return true;
+        
+        return element.offsetParent !== null || element.getClientRects().length > 0;
     },
 
     /**
