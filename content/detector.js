@@ -9,7 +9,8 @@ const BH_Detector = {
         'aftenposten.no': ['[id^="sp_message_container"]', '.sp_message_container'],
         'e24.no': ['[id^="sp_message_container"]', '.sp_message_container'],
         'bt.no': ['[id^="sp_message_container"]', '.sp_message_container'],
-        'aftenbladet.no': ['[id^="sp_message_container"]', '.sp_message_container', '#sp_message_container_1485780']
+        'aftenbladet.no': ['[id^="sp_message_container"]', '.sp_message_container', '#sp_message_container_1485780'],
+        'godt.no': ['[id^="sp_message_container"]', '.sp_message_container']
     },
 
     // Custom fixes for specific sites that need more than just element hiding
