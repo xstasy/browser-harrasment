@@ -22,6 +22,14 @@ const BH_Detector = {
             classesToRemove: [
                 { selector: '.aid-background-blur', classes: ['aid-background-blur'] }
             ]
+        },
+        't-a.no': {
+            styles: [
+                { selector: '#aid-overlay', properties: { 'z-index': '0' } }
+            ],
+            classesToRemove: [
+                { selector: '.aid-background-blur', classes: ['aid-background-blur'] }
+            ]
         }
     },
 
