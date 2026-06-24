@@ -32,12 +32,44 @@
     let isProcessing = false;
 
     /**
+     * Check if hostname matches a configured domain
+     */
+    function matchesDomain(hostname, domain) {
+        return hostname === domain || hostname.endsWith('.' + domain);
+    }
+
+    /**
+     * Get selectors that should be hard-stripped for the current site
+     */
+    function getStripoutSelectors() {
+        const hostname = window.location.hostname;
+        return Object.entries(BH_Detector.stripoutSelectors || {})
+            .filter(([domain]) => matchesDomain(hostname, domain))
+            .flatMap(([, selectors]) => selectors);
+    }
+
+    /**
+     * Check an added element against site-specific stripout selectors
+     */
+    function matchesStripoutSelector(element, selectors) {
+        if (!selectors.length) return false;
+
+        return selectors.some(selector => {
+            try {
+                return element.matches(selector) || !!element.querySelector(selector);
+            } catch (e) {
+                return false;
+            }
+        });
+    }
+
+    /**
      * Apply custom site-specific fixes
      */
     function applySiteFixes() {
         const hostname = window.location.hostname;
         const fixes = Object.entries(BH_Detector.siteFixes || {})
-            .filter(([domain]) => hostname === domain || hostname.endsWith('.' + domain))
+            .filter(([domain]) => matchesDomain(hostname, domain))
             .map(([, fix]) => fix);
 
         for (const fix of fixes) {
@@ -115,10 +147,7 @@
             // Apply site-specific fixes (e.g. z-index, class removal)
             applySiteFixes();
 
-            const hostname = window.location.hostname;
-            const stripoutSelectors = Object.entries(BH_Detector.stripoutSelectors || {})
-                .filter(([domain]) => hostname === domain || hostname.endsWith('.' + domain))
-                .flatMap(([, selectors]) => selectors);
+            const stripoutSelectors = getStripoutSelectors();
 
             // 1. Direct stripout check (even if not found as a "container" yet)
             for (const selector of stripoutSelectors) {
@@ -148,11 +177,6 @@
                 }
 
                 // Check for site-specific stripout (hard-hide)
-                const hostname = window.location.hostname;
-                const stripoutSelectors = Object.entries(BH_Detector.stripoutSelectors || {})
-                    .filter(([domain]) => hostname === domain || hostname.endsWith('.' + domain))
-                    .flatMap(([, selectors]) => selectors);
-                
                 let isStripout = false;
                 for (const selector of stripoutSelectors) {
                     if (container.matches(selector)) {
@@ -228,12 +252,18 @@
         const observer = new MutationObserver((mutations) => {
             // Check if any mutations might have added a consent popup
             let shouldProcess = false;
+            const stripoutSelectors = getStripoutSelectors();
 
             for (const mutation of mutations) {
                 if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
                     for (const node of mutation.addedNodes) {
                         try {
                             if (node.nodeType === Node.ELEMENT_NODE) {
+                                if (matchesStripoutSelector(node, stripoutSelectors)) {
+                                    shouldProcess = true;
+                                    break;
+                                }
+
                                 // Optimized check: check ID and Class first (cheap)
                                 const id = node.id?.toLowerCase() || '';
                                 const className = typeof node.className === 'string' ? node.className.toLowerCase() : '';
